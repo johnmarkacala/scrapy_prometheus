@@ -9,7 +9,7 @@ setup(
     install_requires=['prometheus_client'],
     name='scrapy_prometheus',
     version=VERSION,
-    py_modules=['scrapy_prometheus'],
+    packages=find_packages(exclude=('tests', 'tests.*')),
     url='https://github.com/sashgorokhov/scrapy_prometheus',
     download_url='https://github.com/sashgorokhov/scrapy_prometheus/archive/master.zip',
     keywords=['scrapy', 'prometheus', 'pushgateway', 'monitoring'],
