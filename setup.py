@@ -1,4 +1,4 @@
-from distutils.core import setup
+from distutils.core import setup, find_packages
 
 with open('README.rst') as readme:
     long_description = readme.read()
