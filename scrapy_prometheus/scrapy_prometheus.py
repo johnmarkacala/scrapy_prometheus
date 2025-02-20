@@ -1,3 +1,4 @@
+import os
 import functools
 import socket
 from collections import defaultdict
@@ -147,7 +148,8 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
 
     def get_labels(self, spider=None):
         labels = {
-            'spider': spider.name if spider else ''
+            'spider': spider.name if spider else '',
+            'job_id': os.environ.get('SCRAPY_JOB', '')
         }
         labels.update(self.prometheus_default_labels)
         return labels
