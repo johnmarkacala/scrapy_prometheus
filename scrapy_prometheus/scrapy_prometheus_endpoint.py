@@ -6,7 +6,8 @@ from twisted.web.server import Site
 from twisted.web import server, resource
 from twisted.internet import task
 from scrapy.exceptions import NotConfigured
-from scrapy.utils.reactor import listen_tcp
+from scrapy.utils.reactor import listen_tcp, install_reactor
+
 from scrapy import signals
 
 logger = logging.getLogger(__name__)
@@ -16,11 +17,12 @@ class ScrapyPrometheusWebServiceMixin(Site):
     """
     This class definition handles all of the hosting side of things.
     """
+    install_reactor("twisted.internet.asyncioreactor.AsyncioSelectorReactor")
+
     def __init__(self, crawler, **kwargs):
         # Collect locals
         self.tasks = []
         self.crawler = crawler
-        # self.stats = self.crawler.stats # problematic as this gets removed later on...
         self.stats = self # The singularity cometh
 
         # Add signals hooks
@@ -43,7 +45,7 @@ class ScrapyPrometheusWebServiceMixin(Site):
     def _start_server(self):
         if self.crawler.settings.getbool('PROMETHEUS_ENDPOINT_ENABLED', True):
             root = resource.Resource()
-            self.promtheus = None
+            self.prometheus = None
 
             registry = self.get_registry(spider=None)
             self._prom_metrics_resource = MetricsResource(registry=registry)
@@ -52,13 +54,7 @@ class ScrapyPrometheusWebServiceMixin(Site):
 
     def _start_prometheus_endpoint(self):
         if self.crawler.settings.getbool('PROMETHEUS_ENDPOINT_ENABLED', True):
-            self.promtheus = listen_tcp(self.port, self.host, self)
-
-            # Periodically update the metrics
-            # no need to do this anymore..
-            # tsk = task.LoopingCall(self.update)
-            # self.tasks.append(tsk)
-            # tsk.start(self.interval, now=True)
+            self.prometheus = listen_tcp(self.port, self.host, self)
 
     def _stop_prometheus_endpoint(self):
         # Stop all periodic tasks
@@ -67,4 +63,4 @@ class ScrapyPrometheusWebServiceMixin(Site):
                 tsk.stop()
 
         # Stop metrics exporting
-        self.promtheus.stopListening()
+        self.prometheus.stopListening()
