@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 with open('README.rst') as readme:
     long_description = readme.read()
 
-VERSION = '0.5.0'
+VERSION = '0.5.1'
 
 setup(
     install_requires=['prometheus_client'],
