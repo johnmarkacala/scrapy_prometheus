@@ -148,8 +148,8 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
 
     def get_labels(self, spider=None):
         labels = {
-            'spider': spider.name if spider else os.environ.get('SCRAPY_SPIDER', ''),
-            'job_id': os.environ.get('SCRAPY_JOB', '')
+            'spider': spider.name if spider else '',
+            'job_id': spider.job_id if spider else ''
         }
         labels.update(self.prometheus_default_labels)
         return labels
