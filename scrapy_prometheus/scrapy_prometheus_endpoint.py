@@ -43,7 +43,7 @@ class ScrapyPrometheusWebServiceMixin(Site):
 
 
     def _start_server(self):
-        if self.crawler.settings.getbool('PROMETHEUS_ENDPOINT_ENABLED', True):
+        if self.crawler.settings.getbool('PROMETHEUS_ENDPOINT_ENABLED', True):                                         
             root = resource.Resource()
             self.prometheus = None
 

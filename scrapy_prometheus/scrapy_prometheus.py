@@ -185,7 +185,6 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
         self._stop_prometheus_endpoint()
 
     def spider_opened(self, spider):
-        self.forced_spider(spider)
         if self.crawler.settings.getbool('PROMETHEUS_DEFAULT_METRICS', True):
             self.inc_value("spider_opened", spider=spider)
 
