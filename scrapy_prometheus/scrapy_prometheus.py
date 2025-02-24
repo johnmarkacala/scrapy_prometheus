@@ -161,9 +161,9 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
     def _persist_stats(self, stats, spider=None):
         super(PrometheusStatsCollector, self)._persist_stats(stats, spider)
 
-        if spider and spider.name not in self.registries:
-            spider.logger.warning('%s spider not found in collector registries', spider.name)
-            return
+        # if spider and spider.name not in self.registries:
+        #     spider.logger.warning('%s spider not found in collector registries', spider.name)
+        #     return
 
         try:
             push_to_gateway(
