@@ -100,6 +100,7 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
 
         registry = self.get_registry(spider)
         _labels = labels if labels else self.prometheus_default_labels
+        print("labels", _labels)
 
         if name not in registry._names_to_collectors:
             metric, created = metric_type(name, key, _labels, registry=registry), True
