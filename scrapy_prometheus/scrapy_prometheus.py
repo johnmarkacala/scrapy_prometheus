@@ -1,15 +1,12 @@
 import os
 import functools
 import socket
-import logging
 from collections import defaultdict
 
 import prometheus_client
 from scrapy import statscollectors, signals
 
 from .scrapy_prometheus_endpoint import ScrapyPrometheusWebServiceMixin
-
-logger = logging.getLogger(__name__)
 
 METRIC_COUNTER = prometheus_client.Counter
 METRIC_GAUGE = prometheus_client.Gauge
@@ -103,7 +100,6 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
 
         registry = self.get_registry(spider)
         _labels = labels if labels else self.prometheus_default_labels
-        logger.debug("labels: %s", _labels)
 
         if name not in registry._names_to_collectors:
             metric, created = metric_type(name, key, _labels, registry=registry), True
