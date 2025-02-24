@@ -187,20 +187,20 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
     def spider_opened(self, spider):
         self.forced_spider(spider)
         if self.crawler.settings.getbool('PROMETHEUS_DEFAULT_METRICS', True):
-            self.inc_value("spider_opened", spider=self)
+            self.inc_value("spider_opened", spider=spider)
 
     def spider_closed(self, spider, reason):
         if self.crawler.settings.getbool('PROMETHEUS_DEFAULT_METRICS', True):
-            self.inc_value("spider_closed", spider=self)
+            self.inc_value("spider_closed", spider=spider)
 
     def item_scraped(self, item, spider):
         if self.crawler.settings.getbool('PROMETHEUS_DEFAULT_METRICS', True):
-            self.inc_value("item_scraped", spider=self)
+            self.inc_value("item_scraped", spider=spider)
 
     def response_received(self, spider):
         if self.crawler.settings.getbool('PROMETHEUS_DEFAULT_METRICS', True):
-            self.inc_value("response_received", spider=self)
+            self.inc_value("response_received", spider=spider)
 
     def item_dropped(self, item, spider, exception):
         if self.crawler.settings.getbool('PROMETHEUS_DEFAULT_METRICS', True):
-            self.inc_value("item_dropped", spider=self)
+            self.inc_value("item_dropped", spider=spider)
