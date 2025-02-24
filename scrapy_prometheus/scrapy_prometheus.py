@@ -1,12 +1,15 @@
 import os
 import functools
 import socket
+import logging
 from collections import defaultdict
 
 import prometheus_client
 from scrapy import statscollectors, signals
 
 from .scrapy_prometheus_endpoint import ScrapyPrometheusWebServiceMixin
+
+logger = logging.getLogger(__name__)
 
 METRIC_COUNTER = prometheus_client.Counter
 METRIC_GAUGE = prometheus_client.Gauge
@@ -89,7 +92,7 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
         # Hosting a Prometheus endpoint doesn't work well with multiple registries.
         # So I think the spider name should just go into the metric label instead.
 
-        # reg_name = getattr(spider, 'name', None)
+        # reg_name = getattr(spider, 'name', "default")
         reg_name = "default"
         return self.registries[reg_name]
 
@@ -100,7 +103,7 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
 
         registry = self.get_registry(spider)
         _labels = labels if labels else self.prometheus_default_labels
-        print("labels", _labels)
+        logger.debug("labels: %s", _labels)
 
         if name not in registry._names_to_collectors:
             metric, created = metric_type(name, key, _labels, registry=registry), True
@@ -165,7 +168,7 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
         try:
             push_to_gateway(
                 pushgateway=self.crawler.settings.get('PROMETHEUS_PUSHGATEWAY', '127.0.0.1:9091'),
-                registry=self.registries[spider.name if spider else "default"],
+                registry=self.registries["default"],
                 method=self.crawler.settings.get('PROMETHEUS_PUSH_METHOD', 'POST'),
                 timeout=self.crawler.settings.get('PROMETHEUS_PUSH_TIMEOUT', 5),
                 job=self.crawler.settings.get('PROMETHEUS_JOB', 'scrapy'),
