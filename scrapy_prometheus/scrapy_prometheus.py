@@ -115,7 +115,6 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
     def _get_metric(self, key, value, spider=None, labels={}, metric_type=METRIC_GAUGE):
         if isinstance(value, (int, float)):
             if not labels:
-                logger.debug(f"NO LABELS: {key}, {value}, {spider}")
                 labels = self.get_labels(spider)
             metric, _ = self.get_metric(key, metric_type, spider=spider, labels=labels)
             if metric:
