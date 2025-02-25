@@ -1,4 +1,5 @@
 import socket
+import re
 
 import prometheus_client
 from scrapy import statscollectors, signals
@@ -39,15 +40,17 @@ class PrometheusStatsCollector(ScrapyPrometheusWebServiceMixin, statscollectors.
     def get_metric(self, key, value, spider=None, labels=None, metric_type=METRIC_GAUGE):
         if not isinstance(value, (int, float)):
             return None
-        
-        name = f"{self.metric_prefix}_{key.replace('/', '_')}"
-        registry = self.get_registry()
+
+        if 'exception_type' in key:
+            return None  # Skip exception-related metrics
+
+        name = f"{self.metric_prefix}_{re.sub(r'[^a-zA-Z0-9_]', '_', key)}"
         labels = labels or self.get_labels(spider)
         
-        if name not in registry._names_to_collectors:
-            metric = metric_type(name, key, labels, registry=registry)
+        if name not in self.registry._names_to_collectors:
+            metric = metric_type(name, key, labels, registry=self.registry)
         else:
-            metric = registry._names_to_collectors[name]
+            metric = self.registry._names_to_collectors[name]
         
         return metric.labels(**labels)
 
